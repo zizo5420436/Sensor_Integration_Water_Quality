@@ -312,6 +312,25 @@ void Command_Dispatcher(void)
 //    		                  strlen(uart_buf),
 //    		                  HAL_MAX_DELAY);
     }
+	if (ph_Japan)
+	{
+		ph_Japan = false;
+		uint16_t count = 0;
+
+		while (1)
+		{
+			ph_Japan_running();
+			count++;
+			if (count >= 101)
+			{
+				break;
+			}
+
+		}
+		HAL_UART_Transmit(&huart2, (uint8_t*) uart_buf_Japan,
+				strlen(uart_buf_Japan),
+				HAL_MAX_DELAY);
+	}
     if(ph_Local)
     {
     	ph_Local = false;
@@ -430,6 +449,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 //				HAL_UART_Transmit(&huart2,(uint8_t*)msg_ph_france,strlen(msg_ph_france),HAL_MAX_DELAY);
 
 			}
+			else if(strcmp(cmd_buffer,"ph jap")==0 ||strcmp(cmd_buffer,"PH JAP")==0 )
+			{
+				 ph_Japan = true;
+//				HAL_UART_Transmit(&huart2,(uint8_t*)msg_ph_france,strlen(msg_ph_france),HAL_MAX_DELAY);
+			}	
 			else if(strcmp(cmd_buffer,"cl")==0 ||strcmp(cmd_buffer,"CL")==0 )
 			{
 				chlorine_calculation();
@@ -529,6 +553,7 @@ int main(void)
 	  Command_Dispatcher();
 	  Calculation_Conductivity();
 	  ph_France_Runnnig_temp();
+	   ph_Japan_Runnnig_temp();
 
   }
   /* USER CODE END 3 */
@@ -1013,4 +1038,5 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
 
